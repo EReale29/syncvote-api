@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { UsersService } from '../services';
+import { validationResult } from 'express-validator';
 
 export class UserController {
   private usersService: UsersService;
@@ -9,10 +10,25 @@ export class UserController {
   }
 
   async createUser(request: Request, response: Response): Promise<void> {
-    await this.usersService.createUser();
+    const errors = validationResult(request);
+
+    if (!errors.isEmpty()) {
+      response.status(400).json({
+        status: 400,
+        message: 'Bad request.',
+        data: errors.array(),
+      })
+    }
+
+    const { email, password, username } = request.body;
+
+    const userData = { email, password, username};
+
+    await this.usersService.createUser(userData);
 
     response.status(201).send({
-      message: 'testooooooo'
+      status: 201,
+      message: 'user created successfully!'
     });
   }
 }
