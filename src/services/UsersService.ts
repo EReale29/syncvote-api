@@ -4,6 +4,7 @@ import { IResBody } from "../types/api";
 import { firestoreTimestamp } from "../utils/firestore-helpers";
 import { comparePasswords, encryptPassword } from "../utils/password";
 import { formatUserData } from "../utils/formatData";
+import {generateToken} from "../utils/jwt";
 
 
 export class UsersService {
@@ -89,7 +90,7 @@ export class UsersService {
           message: 'User login successfully!',
           data: {
             user: { ...formatteUser},
-            token: '',
+            token: generateToken(usersQuerySnapshot.docs[0].id),
           }
         }
       } else {
