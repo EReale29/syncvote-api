@@ -11,6 +11,7 @@
   "license": "ISC",
   "dependencies": {
     "@google-cloud/storage": "^7.13.0",
+    "@jridgewell/resolve-uri": "^3.1.2",
     "@types/morgan": "^1.9.9",
     "@types/node": "^20.14.2",
     "bcrypt": "^5.1.1",
@@ -20,6 +21,7 @@
     "chokidar": "^4.0.1",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
+    "es-errors": "^1.0.0",
     "express": "^4.19.2",
     "express-validator": "^7.2.0",
     "fill-range": "^7.1.1",
@@ -31,6 +33,7 @@
     "jsonwebtoken": "^9.0.2",
     "lodash": "^4.17.21",
     "morgan": "^1.10.0",
+    "negotiator": "^1.0.0",
     "to-regex-range": "^5.0.1"
   },
   "devDependencies": {
