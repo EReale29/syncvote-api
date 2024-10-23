@@ -6,7 +6,7 @@ export interface User {
   email?: string;
   password?: string;
   role?: 'member' | 'admin';
-  createdAt?: Timestamp;
-  updatedAt?: Timestamp;
+  createdAt?: Timestamp | Date;
+  updatedAt?: Timestamp | Date;
 
 }

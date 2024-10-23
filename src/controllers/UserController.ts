@@ -18,17 +18,48 @@ export class UserController {
         message: 'Bad request.',
         data: errors.array(),
       })
+    } else {
+      try {
+        const { email, password, username } = request.body;
+
+        const userData = { email, password, username};
+
+        const userResponse = await this.usersService.createUser(userData);
+
+        response.status(userResponse.status).send({
+          ...userResponse,
+        })
+
+      } catch (error){
+        response.status(500).json({
+          status: 500,
+          message: 'Internal server error',
+          data: error
+        })
+      }
+
     }
 
-    const { email, password, username } = request.body;
+  }
 
-    const userData = { email, password, username};
+  async getUsers(request: Request, response: Response): Promise<void> {
 
-    await this.usersService.createUser(userData);
+    try {
+      const userResponse = await this.usersService.getUsers();
 
-    response.status(201).send({
-      status: 201,
-      message: 'user created successfully!'
-    });
+      response.status(userResponse.status).send({
+        ...userResponse,
+      });
+    } catch (error){
+
+      response.status(500).json({
+        status: 500,
+        message: 'internal server error',
+        data: error
+      })
+    }
+
+
+
   }
 }
