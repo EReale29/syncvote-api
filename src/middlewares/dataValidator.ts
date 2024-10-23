@@ -23,10 +23,18 @@ export const validateCreatePost = [
     .isString()
     .withMessage('Description must be a string'),
   body('category')
-    .isArray({ min:1})
+    .isArray({ min: 1 })
     .withMessage('At least one category is required')
     .custom((categories) =>
       categories.every((category: string) => typeof category === 'string')
     )
     .withMessage('all categories must be string'),
-];
+]
+
+export const validateCreateComment = [
+  body('description')
+    .notEmpty()
+    .withMessage('Description is required')
+    .isString()
+    .withMessage('Description must be a string'),
+]

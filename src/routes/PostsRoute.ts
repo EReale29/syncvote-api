@@ -1,9 +1,6 @@
 import { Router } from 'express';
 import { PostController } from '../controllers';
-import {
-  validateCreatePost,
-  validateLoginPost
-} from '../middlewares/dataValidator';
+import { validateCreatePost } from '../middlewares/dataValidator';
 
 export class PostsRoute {
   private postController: PostController;
@@ -16,7 +13,7 @@ export class PostsRoute {
     const router = Router();
 
     router.post('/posts', validateCreatePost, this.postController.createPost.bind(this.postController));
-    router.get('/posts', this.postController.getposts.bind(this.postController));
+    router.get('/posts', this.postController.getPosts.bind(this.postController));
 
     return router;
   }

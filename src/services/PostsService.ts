@@ -2,7 +2,6 @@ import {Post} from "../types/entities/Post";
 import { FirestoreCollections } from "../types/firestore";
 import { IResBody } from "../types/api";
 import { firestoreTimestamp } from "../utils/firestore-helpers";
-import { comparePasswords, encryptPassword } from "../utils/password";
 
 
 export class PostsService {
