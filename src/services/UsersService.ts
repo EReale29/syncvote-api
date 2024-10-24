@@ -67,6 +67,21 @@ export class UsersService {
     }
   }
 
+  async getUsersById(userId: string): Promise<IResBody> {
+    const userDoc = await this.db.users.doc(userId).get();
+    const formattedUser = formatUserData(userDoc.data());
+
+    return {
+      status: 200,
+      message: 'Users retrieved successfully!',
+      data: {
+        id: userId,
+        ...formattedUser
+      }
+    }
+
+  }
+
   async login (userData: {email: string; password: string}): Promise<IResBody>{
     const {email, password} = userData;
     const usersQuerySnapshot = await this.db.users.where('email', '==', email).get();

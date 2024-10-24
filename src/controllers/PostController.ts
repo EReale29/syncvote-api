@@ -61,4 +61,29 @@ export class PostController {
 
   }
 
+  async getPostById(request: Request, response: Response): Promise<void> {
+    try {
+      if (request.params.id) {
+        const postResponse = await this.postsService.getPostById(request.params.id);
+
+        response.status(postResponse.status).send({
+          ...postResponse,
+        });
+      } else {
+        response.status(404).json({
+          status: 404,
+          message: 'Post Not Found',
+        })
+      }
+
+    } catch (error){
+
+      response.status(500).json({
+        status: 500,
+        message: 'internal server error',
+        data: error
+      })
+    }
+
+  }
 }

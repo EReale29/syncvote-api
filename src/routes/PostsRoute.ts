@@ -14,6 +14,7 @@ export class PostsRoute {
 
     router.post('/posts', validateCreatePost, this.postController.createPost.bind(this.postController));
     router.get('/posts', this.postController.getPosts.bind(this.postController));
+    router.get('/posts/:id', this.postController.getPostById.bind(this.postController));
 
     return router;
   }

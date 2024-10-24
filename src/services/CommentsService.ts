@@ -54,7 +54,7 @@ export class CommentsService {
 
     return {
       status: 200,
-      message: 'commentss retrieved successfully!',
+      message: 'comments retrieved successfully!',
       data: comments
     }
   }
