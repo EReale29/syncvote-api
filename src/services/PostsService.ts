@@ -3,6 +3,7 @@ import { FirestoreCollections } from "../types/firestore";
 import { IResBody } from "../types/api";
 import { firestoreTimestamp } from "../utils/firestore-helpers";
 import {formatUserData} from "../utils/formatData";
+import {User} from "../types/entities/User";
 
 
 export class PostsService {
@@ -71,6 +72,23 @@ export class PostsService {
         id: postId,
         ...postDoc.data()
       }
+    }
+
+  }
+
+  async updatePostsById(postId: string, postData: User ): Promise<IResBody> {
+    const postDoc = await this.db.posts.doc(postId).get();
+
+    const postRef = this.db.posts.doc(postId);
+    await postRef.set({
+      ...postDoc.data(),
+      ...postData,
+      updatedAt: firestoreTimestamp.now(),
+    });
+
+    return {
+      status: 200,
+      message: 'Users update successfully!',
     }
 
   }

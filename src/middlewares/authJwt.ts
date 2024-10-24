@@ -3,6 +3,7 @@ import {Request, Response, NextFunction} from "express";
 
 interface DecodeToken extends JwtPayload {
   id: string;
+  role: string;
 }
 
 const verifyToken = (req: Request, res: Response, next: NextFunction) => {
@@ -28,6 +29,7 @@ const verifyToken = (req: Request, res: Response, next: NextFunction) => {
     const decode = jwt.verify(tokenParts[1], process.env.SECRET_KEY || '') as DecodeToken;
 
     req.userId = decode.id;
+    req.userRole = decode.role;
 
     next();
 

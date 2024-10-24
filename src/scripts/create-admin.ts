@@ -5,14 +5,14 @@ import {db, firestoreTimestamp} from "../utils/firestore-helpers";
 import { encryptPassword } from "../utils/password";
 
 async function createAdmin(): Promise<void> {
-  if (process.env.ADMIN_EMAIL && process.env.ADMIN_PASSWORD && process.env.ADMIN_USERNAME) {
+  if (process.env.ADMIN_MAIL && process.env.ADMIN_PASSWORD && process.env.ADMIN_USERNAME) {
     const usersQuerySnapshot = await db
-      .users.where('email', '==', process.env.ADMIN_EMAIL).get();
+      .users.where('email', '==', process.env.ADMIN_MAIL).get();
 
-    if (usersQuerySnapshot.empty){
+    if (usersQuerySnapshot.empty) {
       const userRef = db.users.doc();
       await userRef.set({
-        email: process.env.ADMIN_EMAIL,
+        email: process.env.ADMIN_MAIL,
         username: process.env.ADMIN_USERNAME,
         password: encryptPassword(process.env.ADMIN_PASSWORD as string),
         role: 'admin',
@@ -21,6 +21,8 @@ async function createAdmin(): Promise<void> {
       });
 
       console.log("Admin Created successfully!");
+    }else {
+      console.log("Admin already exists!");
     }
   }
 }

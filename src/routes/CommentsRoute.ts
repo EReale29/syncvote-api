@@ -14,6 +14,7 @@ export class CommentsRoute {
 
     router.post('/comments', validateCreateComment, this.commentController.createComment.bind(this.commentController));
     router.get('/comments', this.commentController.getComments.bind(this.commentController));
+    router.get('/comments/:id', this.commentController.getCommentById.bind(this.commentController));
 
     return router;
   }

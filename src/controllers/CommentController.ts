@@ -22,7 +22,10 @@ export class CommentController {
       try {
         const { description } = request.body;
 
-        const commentData = { description };
+        const commentData = {
+          description,
+          createdBy : request.userId,
+        };
 
         const commentResponse = await this.commentsService.createComment(commentData);
 
@@ -50,6 +53,32 @@ export class CommentController {
       response.status(commentResponse.status).send({
         ...commentResponse,
       });
+    } catch (error){
+
+      response.status(500).json({
+        status: 500,
+        message: 'internal server error',
+        data: error
+      })
+    }
+
+  }
+
+  async getCommentById(request: Request, response: Response): Promise<void> {
+    try {
+      if (request.params.id) {
+        const commentResponse = await this.commentsService.getCommentById(request.params.id);
+
+        response.status(commentResponse.status).send({
+          ...commentResponse,
+        });
+      } else {
+        response.status(404).json({
+          status: 404,
+          message: 'Post Not Found',
+        })
+      }
+
     } catch (error){
 
       response.status(500).json({

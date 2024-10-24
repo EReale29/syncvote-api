@@ -59,4 +59,18 @@ export class CommentsService {
     }
   }
 
+  async getCommentById(commentId: string): Promise<IResBody> {
+    const commentDoc = await this.db.comments.doc(commentId).get();
+
+    return {
+      status: 200,
+      message: 'Users retrieved successfully!',
+      data: {
+        id: commentId,
+        ...commentDoc.data()
+      }
+    }
+
+  }
+
 }
