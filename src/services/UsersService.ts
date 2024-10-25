@@ -68,7 +68,7 @@ export class UsersService {
           });
         }
         await this.redisClient.set(cacheKey, JSON.stringify(users)), {
-          EX: 3600
+          EX: 180
         };
 
     }
@@ -109,6 +109,29 @@ export class UsersService {
       status: 200,
       message: 'Users update successfully!',
     }
+
+  }
+
+  async deleteUserById(userId: string): Promise<IResBody> {
+    const userDoc = await this.db.users.doc(userId).get();
+
+    if (userDoc.data()) {
+      console.log(userDoc.data());
+
+      const userRef = this.db.users.doc(userId);
+      await userRef.delete();
+
+      return {
+        status: 200,
+        message: 'Users delete successfully!',
+      }
+    } else {
+      return {
+        status: 500,
+        message: 'Users not found!',
+      }
+    }
+
 
   }
 

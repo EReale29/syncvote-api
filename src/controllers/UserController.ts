@@ -1,7 +1,6 @@
 import { Request, Response } from 'express';
 import { UsersService } from '../services';
 import { validationResult } from 'express-validator';
-import {partial} from "lodash";
 import {User} from "../types/entities/User";
 
 export class UserController {
@@ -129,6 +128,30 @@ export class UserController {
 
 
   }
+
+  async deleteUserById(request: Request, response: Response): Promise<void> {
+    try {
+        if (request.userRole == 'admin') {
+
+          const userResponse = await this.usersService.deleteUserById(request.params.id);
+          response.status(userResponse.status).send({
+            ...userResponse,
+          });
+        } else {
+          response.status(404).json({
+            status: 404,
+            message: 'User Not Found'
+          });
+        }
+    } catch (error){
+      response.status(500).json({
+        status: 500,
+        message: 'internal server error',
+        data: error
+      });
+    }
+  }
+
 
   async login(request: Request, response: Response): Promise<void> {
     const errors = validationResult(request);

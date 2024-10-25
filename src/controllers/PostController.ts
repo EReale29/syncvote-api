@@ -108,7 +108,7 @@ export class PostController {
           const postData: Partial<Post> = {};
           if (title) { postData.title = title};
           if (description) { postData.description = title};
-          if (categories) { postData.categories}
+          if (categories) { postData.categories = categories; }
 
 
           const userResponse = await this.postsService.updatePostsById(request.params.id, postData);

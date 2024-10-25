@@ -21,6 +21,7 @@ export class UsersRoute {
     router.get('/users', authJwt.verifyToken, this.userController.getUsers.bind(this.userController));
     router.get('/users/:id', authJwt.verifyToken, this.userController.getUserById.bind(this.userController));
     router.put('/users/:id', validateUpdateUser, authJwt.verifyToken, this.userController.updateUserById.bind(this.userController));
+    router.delete('/users/:id', authJwt.verifyToken, this.userController.deleteUserById.bind(this.userController));
 
     router.post('/auth/login', validateLoginUser, this.userController.login.bind(this.userController));
 
