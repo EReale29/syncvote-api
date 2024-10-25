@@ -49,6 +49,8 @@ export class UsersService {
 
   async getUsers(): Promise<IResBody> {
 
+
+
     const cacheKey = 'users';
     let users: User[] = [];
 
@@ -81,15 +83,28 @@ export class UsersService {
   }
 
   async getUsersById(userId: string): Promise<IResBody> {
-    const userDoc = await this.db.users.doc(userId).get();
-    const formattedUser = formatUserData(userDoc.data());
+    const cacheKey = 'users';
+    const cachedUsers = await this.redisClient.get(cacheKey);
+    let users: User[] = [];
+    if (cachedUsers) {
+      const user = JSON.parse(cachedUsers).find((u: User) => u.id === userId);
+      users.push( user )
+    } else {
+      const userDoc = await this.db.users.doc(userId).get();
+      const formattedUser = formatUserData(userDoc.data());
+      users.push({
+        id: userId,
+        ...formattedUser,
+      });
+
+    }
+
 
     return {
       status: 200,
       message: 'Users retrieved successfully!',
       data: {
-        id: userId,
-        ...formattedUser
+        users
       }
     }
 

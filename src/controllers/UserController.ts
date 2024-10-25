@@ -44,47 +44,62 @@ export class UserController {
   }
 
   async getUsers(request: Request, response: Response): Promise<void> {
-
-    try {
-      const userResponse = await this.usersService.getUsers();
-
-      response.status(userResponse.status).send({
-        ...userResponse,
-      });
-    } catch (error){
-
-      response.status(500).json({
-        status: 500,
-        message: 'internal server error',
-        data: error
-      })
-    }
-
-  }
-
-  async getUserById(request: Request, response: Response): Promise<void> {
-    try {
-      if (request.params.id) {
-        const userResponse = await this.usersService.getUsersById(request.params.id);
+    if (request.userRole) {
+      try {
+        const userResponse = await this.usersService.getUsers();
 
         response.status(userResponse.status).send({
           ...userResponse,
         });
-      } else {
-        response.status(404).json({
-          status: 404,
-          message: 'User Not Found',
+      } catch (error){
+
+        response.status(500).json({
+          status: 500,
+          message: 'internal server error',
+          data: error
         })
       }
-
-    } catch (error){
-
-      response.status(500).json({
-        status: 500,
-        message: 'internal server error',
-        data: error
+    } else {
+      response.status(403).json({
+        status: 403,
+        message: 'Unauthorized',
       })
     }
+
+
+  }
+
+  async getUserById(request: Request, response: Response): Promise<void> {
+    if (request.userRole == "admin") {
+      try {
+        if (request.params.id) {
+          const userResponse = await this.usersService.getUsersById(request.params.id);
+
+          response.status(userResponse.status).send({
+            ...userResponse,
+          });
+        } else {
+          response.status(404).json({
+            status: 404,
+            message: 'User Not Found',
+          })
+        }
+
+      } catch (error){
+
+        response.status(500).json({
+          status: 500,
+          message: 'internal server error',
+          data: error
+        })
+      }
+    } else {
+      response.status(403).json({
+        status: 403,
+        message: 'Unauthorized',
+      })
+    }
+
 
   }
 
