@@ -22,7 +22,7 @@ export const validateCreatePost = [
     .withMessage('Description is required')
     .isString()
     .withMessage('Description must be a string'),
-  body('category')
+  body('categories')
     .isArray({ min: 1 })
     .withMessage('At least one category is required')
     .custom((categories) =>
@@ -78,4 +78,13 @@ export const validateUpdateComment = [
     .optional()
     .isString()
     .withMessage('Description must be a string'),
+]
+
+export const validateChangePassword = [
+  body('oldPassword')
+    .notEmpty()
+    .withMessage('Password is required'),
+  body('newPassword')
+    .notEmpty()
+    .withMessage('Password is required'),
 ]

@@ -33,6 +33,9 @@ export class UsersService {
         updatedAt: firestoreTimestamp.now(),
       });
 
+      const cacheKey = `users`;
+      await this.redisClient.del(cacheKey);
+
       return {
         status : 201,
         message: 'User Created successfully!',
@@ -49,12 +52,8 @@ export class UsersService {
 
   async getUsers(): Promise<IResBody> {
 
-
-
     const cacheKey = 'users';
     let users: User[] = [];
-
-    const usersQuerySnapshot = await this.db.users.get();
 
     const cachedUsers = await this.redisClient.get(cacheKey);
 
@@ -70,7 +69,7 @@ export class UsersService {
           });
         }
         await this.redisClient.set(cacheKey, JSON.stringify(users)), {
-          EX: 180
+          EX: 86400
         };
 
     }
@@ -97,6 +96,10 @@ export class UsersService {
         ...formattedUser,
       });
 
+      await this.redisClient.set(cacheKey, JSON.stringify(users)), {
+        EX: 86400
+      };
+
     }
 
 
@@ -120,6 +123,9 @@ export class UsersService {
       updatedAt: firestoreTimestamp.now(),
     });
 
+    const cacheKey = `users`;
+    await this.redisClient.del(cacheKey);
+
     return {
       status: 200,
       message: 'Users update successfully!',
@@ -136,6 +142,9 @@ export class UsersService {
       const userRef = this.db.users.doc(userId);
       await userRef.delete();
 
+      const cacheKey = `users`;
+      await this.redisClient.del(cacheKey);
+
       return {
         status: 200,
         message: 'Users delete successfully!',
@@ -147,6 +156,45 @@ export class UsersService {
       }
     }
 
+
+  }
+
+  async changePassword(userId: string, data: {oldPassword : string; newPassword: string}): Promise<IResBody> {
+    const {oldPassword, newPassword} = data;
+    const usersQuerySnapshot = await this.db.users.where('userId', '==', userId).get();
+
+    if (usersQuerySnapshot.empty){
+      return {
+        status: 401,
+        message: 'Unauthorized',
+      }
+    } else {
+      const isPasswordValid = comparePasswords(
+        oldPassword,
+        usersQuerySnapshot.docs[0].data().password as string,
+      );
+
+      if (isPasswordValid) {
+        const userDoc = await this.db.users.doc(userId).get()
+        const userRef = this.db.users.doc(userId);
+        await userRef.set({
+          ...userDoc.data(),
+          password: encryptPassword(newPassword as string),
+          updatedAt: firestoreTimestamp.now(),
+        });
+
+        return {
+          status: 200,
+          message: 'Password changed successfully!',
+        }
+
+      } else {
+        return {
+          status: 402,
+          message: 'incorrect password!',
+        }
+      }
+    }
 
   }
 

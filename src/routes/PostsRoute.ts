@@ -16,10 +16,19 @@ export class PostsRoute {
   createRouter(): Router {
     const router = Router();
 
-    router.post('/posts', validateCreatePost, this.postController.createPost.bind(this.postController));
+    //Creation de post
+    router.post('/posts', validateCreatePost, authJwt.verifyToken, this.postController.createPost.bind(this.postController));
+    //Affichage de post
     router.get('/posts', authJwt.verifyToken, this.postController.getPosts.bind(this.postController));
     router.get('/posts/:id', authJwt.verifyToken, this.postController.getPostById.bind(this.postController));
+    router.get('/users/:userId/posts', authJwt.verifyToken, this.postController.getAllPostsByUser.bind(this.postController));
+    router.get('/categories', this.postController.getCategories.bind(this.postController));
+    //Mise a jour du post
     router.put('/posts/:id', validateUpdatePost, authJwt.verifyToken, this.postController.updatePostById.bind(this.postController));
+    //Suppression du post
+    router.delete('/posts/:id', authJwt.verifyToken, this.postController.deletePostById.bind(this.postController));
+
+
 
     return router;
   }

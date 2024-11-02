@@ -5,6 +5,8 @@
   "main": "src/server.ts",
   "scripts": {
     "dev": "nodemon --watch 'src/**/*.ts' --exec ts-node src/server.ts",
+    "build": "rm -rf build/ && tsc",
+    "start": "node build/server.js",
     "create-admin": "ts-node src/scripts/create-admin.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -13,6 +15,7 @@
   "dependencies": {
     "@google-cloud/storage": "^7.13.0",
     "@jridgewell/resolve-uri": "^3.1.2",
+    "@types/json-schema": "^7.0.15",
     "@types/morgan": "^1.9.9",
     "@types/node": "^20.14.2",
     "bcrypt": "^5.1.1",
@@ -21,6 +24,7 @@
     "braces": "^3.0.3",
     "chokidar": "^4.0.1",
     "cors": "^2.8.5",
+    "debug": "^4.3.7",
     "dotenv": "^16.4.5",
     "es-errors": "^1.0.0",
     "express": "^4.19.2",

@@ -103,7 +103,7 @@ export class UserController {
 
   }
 
-  async updateUserById(request: Request, response: Response): Promise<void> {
+  async updateUser(request: Request, response: Response): Promise<void> {
     const errors = validationResult(request);
     if (!errors.isEmpty()) {
       response.status(400).json({
@@ -113,7 +113,7 @@ export class UserController {
       })
     }else{
       try {
-        if (request.params.id == request.userId || request.userRole == 'admin') {
+        if (request.userRole == 'admin') {
           const { email, username } = request.body;
           const userData: Partial<User> = {};
           if (email) { userData.email = email};
@@ -128,6 +128,47 @@ export class UserController {
           response.status(404).json({
             status: 404,
             message: 'User Not Found',
+          })
+        }
+
+      } catch (error){
+
+        response.status(500).json({
+          status: 500,
+          message: 'internal server error',
+          data: error
+        })
+      }
+    }
+
+
+  }
+
+  async updateConnectedUser(request: Request, response: Response): Promise<void> {
+    const errors = validationResult(request);
+    if (!errors.isEmpty()) {
+      response.status(400).json({
+        status: 400,
+        message: 'Bad request.',
+        data: errors.array(),
+      })
+    }else{
+      try {
+        if (request.userId) {
+          const { email, username } = request.body;
+          const userData: Partial<User> = {};
+          if (email) { userData.email = email};
+          if (username) { userData.username = username};
+
+
+          const userResponse = await this.usersService.updateUsersById(request.userId, userData);
+          response.status(userResponse.status).send({
+            ...userResponse,
+          });
+        } else {
+          response.status(500).json({
+            status: 500,
+            message: 'internal server error',
           })
         }
 
@@ -167,6 +208,44 @@ export class UserController {
     }
   }
 
+  async changePassword(request: Request, response: Response): Promise<void> {
+    const errors = validationResult(request);
+    if (!errors.isEmpty()) {
+      response.status(400).json({
+        status: 400,
+        message: 'Bad request.',
+        data: errors.array(),
+      })
+    }else{
+      try {
+        if (request.userId) {
+          const { oldPassword , newPassword } = request.body;
+          const data = {oldPassword, newPassword};
+
+
+          const userResponse = await this.usersService.changePassword(request.userId, data);
+
+          response.status(userResponse.status).send({
+            ...userResponse,
+          });
+        } else {
+          response.status(500).json({
+            status: 500,
+            message: 'internal server error',
+          })
+        }
+
+
+      } catch (error){
+
+        response.status(500).json({
+          status: 500,
+          message: 'internal server error',
+          data: error
+        })
+      }
+    }
+  }
 
   async login(request: Request, response: Response): Promise<void> {
     const errors = validationResult(request);
