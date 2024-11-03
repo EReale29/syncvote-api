@@ -85,7 +85,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"email\": \"jaifinilesujete@gmail.com\",\n    \"password\": \"enfinfini\"\n}",
+							"raw": "{\n    \"email\": \"jaifinilesujet@gmail.com\",\n    \"password\": \"enfinfini\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -190,7 +190,7 @@
 							"variable": [
 								{
 									"key": "id",
-									"value": ""
+									"value": "01KPr21Ya5Dc3BzeqT2K"
 								}
 							]
 						}
@@ -302,7 +302,7 @@
 							"variable": [
 								{
 									"key": "id",
-									"value": ""
+									"value": "2zCRZOpEPKLQ5k4lrybY"
 								}
 							]
 						}
@@ -313,7 +313,13 @@
 					"name": "change password",
 					"request": {
 						"method": "PATCH",
-						"header": [],
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{bearer_token}}",
+								"type": "text"
+							}
+						],
 						"body": {
 							"mode": "raw",
 							"raw": "{\n    \"oldPassword\" : \"jesaispas\",\n    \"newPassword\" : \"jesaisplus\"\n}",
@@ -427,7 +433,7 @@
 							"variable": [
 								{
 									"key": "id",
-									"value": "4VqLIyG6TFtgwhXGB3oy"
+									"value": "d8A7UlcyONK83krMBwpD"
 								}
 							]
 						}
@@ -794,7 +800,41 @@
 					"name": "postVote",
 					"request": {
 						"method": "POST",
-						"header": []
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{bearer_token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"vote\": \"up\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/posts/:id/vote",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"posts",
+								":id",
+								"vote"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "d8A7UlcyONK83krMBwpD"
+								}
+							]
+						}
 					},
 					"response": []
 				},
@@ -802,7 +842,101 @@
 					"name": "commentVote",
 					"request": {
 						"method": "POST",
-						"header": []
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/comments/:id/vote",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"comments",
+								":id",
+								"vote"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "postUnvote",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{bearer_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/posts/:id/vote",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"posts",
+								":id",
+								"vote"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "commentUnvote",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{bearer_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/comments/:id/vote",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"comments",
+								":id",
+								"vote"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": ""
+								}
+							]
+						}
 					},
 					"response": []
 				}
