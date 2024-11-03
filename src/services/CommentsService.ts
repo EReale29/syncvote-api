@@ -116,7 +116,6 @@ export class CommentsService {
 
     }
 
-
   async getAllCommentsOfPost(postId: string): Promise<IResBody> {
     const comments: Comment[] = [];
     const postsQuerySnapshot = await this.db.comments.where("postId", "==", postId).get();
@@ -195,13 +194,32 @@ export class CommentsService {
     }
   }
 
-  async voteCommentById(postId: string): Promise<void> {
-    const commentDoc = await this.db.comments.doc(postId).get();
+  async voteCommentById(commentId: string): Promise<void> {
+    const commentDoc = await this.db.comments.doc(commentId).get();
 
     if (commentDoc) {
       const currentVoteCount = commentDoc.data()?.voteCount || 0;
       const newVoteCount = currentVoteCount + 1;
-      const commentRef = this.db.comments.doc(postId);
+      const commentRef = this.db.comments.doc(commentId);
+      await commentRef.set({
+        ...commentDoc.data(),
+        voteCount: newVoteCount,
+        updatedAt: firestoreTimestamp.now(),
+      });
+
+      const cacheKey = `comments`;
+      await this.redisClient.del(cacheKey);
+
+    }
+  }
+
+  async unvoteCommentById(commentId: string): Promise<void> {
+    const commentDoc = await this.db.comments.doc(commentId).get();
+
+    if (commentDoc) {
+      const currentVoteCount = commentDoc.data()?.voteCount || 0;
+      const newVoteCount = currentVoteCount - 1;
+      const commentRef = this.db.comments.doc(commentId);
       await commentRef.set({
         ...commentDoc.data(),
         voteCount: newVoteCount,

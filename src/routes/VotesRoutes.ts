@@ -13,9 +13,13 @@ export class VotesRoute {
   createRouter(): Router {
     const router = Router();
 
-    //Creation de commentaire
+    //Creation du vote
     router.post('/posts/:id/vote', authJwt.verifyToken, validateVote, this.votesController.postVote.bind(this.votesController));
     router.post('/comments/:id/vote', authJwt.verifyToken, validateVote, this.votesController.commentVote.bind(this.votesController));
+    //Suppression du vote
+    router.delete('/posts/:id/vote', authJwt.verifyToken, this.votesController.postUnvote.bind(this.votesController))
+    router.delete('/comments/:id/vote', authJwt.verifyToken, this.votesController.commentUnvote.bind(this.votesController))
+
 
     return router;
   }

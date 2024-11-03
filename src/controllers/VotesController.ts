@@ -50,6 +50,33 @@ export class VotesController {
 
   }
 
+  async postUnvote(request: Request, response: Response): Promise<void> {
+    try {
+      if (request.userId && request.params.id) {
+
+        const voteData: Vote = {
+          entityType: "post",
+          entityId: request.params.id,
+          createdBy: request.userId,
+        };
+
+        const voteResponse = await this.votesService.unvote(voteData);
+
+        response.status(voteResponse.status).send({
+          voteResponse,
+        });
+      }
+
+
+    } catch (error) {
+      response.status(500).json({
+        status: 500,
+        message: 'Internal server error',
+        data: error
+      })
+    }
+  }
+
   async commentVote(request: Request, response: Response): Promise<void> {
     const errors = validationResult(request);
 
@@ -88,5 +115,32 @@ export class VotesController {
 
     }
 
+  }
+
+  async commentUnvote(request: Request, response: Response): Promise<void> {
+    try {
+      if (request.userId && request.params.id) {
+
+        const voteData: Vote = {
+          entityType: "comment",
+          entityId: request.params.id,
+          createdBy: request.userId,
+        };
+
+        const voteResponse = await this.votesService.unvote(voteData);
+
+        response.status(voteResponse.status).send({
+          voteResponse,
+        });
+      }
+
+
+    } catch (error) {
+      response.status(500).json({
+        status: 500,
+        message: 'Internal server error',
+        data: error
+      })
+    }
   }
 }
