@@ -1,61 +1,74 @@
 import { FirestoreCollections } from "../types/firestore";
+import { PostsService, CommentsService } from '.';
 import { IResBody } from "../types/api";
-import { firestoreTimestamp } from "../utils/firestore-helpers";
-
+import {Vote} from "../types/entities/Vote"
+import {firestoreTimestamp} from "../utils/firestore-helpers";
 
 export class VotesService {
 
   private db: FirestoreCollections;
+  private postsService: PostsService;
+  private commentsService: CommentsService;
 
-  constructor(db: FirestoreCollections) {
+  constructor(db: FirestoreCollections, postsService: PostsService, commentsService: CommentsService) {
+    this.postsService = postsService;
+    this.commentsService = commentsService;
     this.db = db;
   }
 
-  async postVote(commentData: Comment): Promise<IResBody> {
+  async sendVote(voteData: Vote): Promise<IResBody> {
 
-    const commentsQuerySnapshot = await this.db.comments.get();
+    const voteDoc = await this.db.votes.where('createdBy', '==', voteData.createdBy)
+      .where('entityId', '==', voteData.entityId)
+      .where('entityType', '==', voteData.entityType)
+      .get();
 
-    if (commentsQuerySnapshot.empty){
-      const commentRef = this.db.comments.doc();
-      await commentRef.set({
-        ...commentData,
-        createdAt: firestoreTimestamp.now(),
-        updatedAt: firestoreTimestamp.now(),
+
+    if (!voteDoc.empty) {
+      const doc = voteDoc.docs[0];
+      const voteRef = this.db.votes.doc(doc.id);
+      await voteRef.set({
+        ...doc.data(),
+        ...voteData,
       });
 
       return {
-        status : 201,
-        message: 'Comment Created successfully!',
+        status: 201,
+        message: voteData.entityType + ' Voted successfully!',
       }
 
     } else {
-      return {
-        status: 409,
-        message: 'Comment already exists',
+
+      const voteRef = this.db.votes.doc();
+      await voteRef.set({
+        ...voteData,
+      });
+
+      if (voteData.entityType == 'post' && voteData.entityId){
+        await this.postsService.votePostById(voteData.entityId);
+
+        return {
+          status : 201,
+          message: 'Post Voted successfully!',
+        }
+
+        } else if (voteData.entityType == 'comment' && voteData.entityId){
+        await this.commentsService.voteCommentById(voteData.entityId);
+
+        return {
+          status : 201,
+          message: 'Comment Voted successfully!',
+        }
       }
-    }
-
-  }
-
-  async commentVote(): Promise<IResBody> {
-
-    const comments: Comment[] = [];
-
-    const commentsQuerySnapshot = await this.db.comments.get();
-
-    for (const doc of commentsQuerySnapshot.docs){
-      comments.push({
-        id: doc.id,
-        ...doc.data(),
-      })
 
     }
 
     return {
-      status: 200,
-      message: 'comments retrieved successfully!',
-      data: comments
+      status: 406,
+      message: 'erreur vote !'
     }
+
+
   }
 
 

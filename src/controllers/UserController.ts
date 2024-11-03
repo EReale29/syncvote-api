@@ -145,6 +145,7 @@ export class UserController {
   }
 
   async updateConnectedUser(request: Request, response: Response): Promise<void> {
+    console.log('je rentre bien dans la fonction controller')
     const errors = validationResult(request);
     if (!errors.isEmpty()) {
       response.status(400).json({
@@ -155,6 +156,7 @@ export class UserController {
     }else{
       try {
         if (request.userId) {
+          console.log(request.userId)
           const { email, username } = request.body;
           const userData: Partial<User> = {};
           if (email) { userData.email = email};

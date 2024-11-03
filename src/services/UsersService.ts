@@ -96,24 +96,28 @@ export class UsersService {
         ...formattedUser,
       });
 
-      await this.redisClient.set(cacheKey, JSON.stringify(users)), {
-        EX: 86400
-      };
-
     }
 
-
-    return {
-      status: 200,
-      message: 'Users retrieved successfully!',
-      data: {
-        users
+    if (users.length > 0) {
+      return {
+        status: 200,
+        message: 'Users retrieved successfully!',
+        data: {
+          users
+        }
+      }
+    } else {
+      return {
+        status: 404,
+        message: 'User not found!',
       }
     }
+
 
   }
 
   async updateUsersById(userId: string, userData: User ): Promise<IResBody> {
+    console.log(userId)
     const userDoc = await this.db.users.doc(userId).get();
 
     const userRef = this.db.users.doc(userId);

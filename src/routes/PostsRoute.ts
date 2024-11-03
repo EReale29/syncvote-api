@@ -19,9 +19,9 @@ export class PostsRoute {
     //Creation de post
     router.post('/posts', validateCreatePost, authJwt.verifyToken, this.postController.createPost.bind(this.postController));
     //Affichage de post
-    router.get('/posts', authJwt.verifyToken, this.postController.getPosts.bind(this.postController));
-    router.get('/posts/:id', authJwt.verifyToken, this.postController.getPostById.bind(this.postController));
-    router.get('/users/:userId/posts', authJwt.verifyToken, this.postController.getAllPostsByUser.bind(this.postController));
+    router.get('/posts', this.postController.getPosts.bind(this.postController));
+    router.get('/posts/:id', this.postController.getPostById.bind(this.postController));
+    router.get('/users/:userId/posts', this.postController.getAllPostsByUser.bind(this.postController));
     router.get('/categories', this.postController.getCategories.bind(this.postController));
     //Mise a jour du post
     router.put('/posts/:id', validateUpdatePost, authJwt.verifyToken, this.postController.updatePostById.bind(this.postController));

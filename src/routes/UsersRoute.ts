@@ -24,8 +24,8 @@ export class UsersRoute {
     router.get('/users', authJwt.verifyToken, this.userController.getUsers.bind(this.userController));
     router.get('/users/:id', authJwt.verifyToken, this.userController.getUserById.bind(this.userController));
     //Mise a jour de l'utilisateur
-    router.put('/users/:id', validateUpdateUser, authJwt.verifyToken, this.userController.updateUser.bind(this.userController));
     router.put('/users/me', validateUpdateUser, authJwt.verifyToken, this.userController.updateConnectedUser.bind(this.userController));
+    router.put('/users/:id', validateUpdateUser, authJwt.verifyToken, this.userController.updateUser.bind(this.userController));
     //Suppression de l'uitlisateur
     router.delete('/users/:id', authJwt.verifyToken, this.userController.deleteUserById.bind(this.userController));
     //Changement de mot de passe

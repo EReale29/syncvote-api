@@ -1,20 +1,21 @@
 import { Router } from 'express';
-import { VoteController } from '../controllers';
-import { validateCreateComment } from '../middlewares/dataValidator';
+import { VotesController } from '../controllers';
+import authJwt from "../middlewares/authJwt";
+import {validateVote} from "../middlewares/dataValidator";
 
-export class CommentsRoute {
-  private voteController: VoteController;
+export class VotesRoute {
+  private votesController: VotesController;
 
-  constructor(voteController: VoteController) {
-    this.voteController = voteController;
+  constructor(votesController: VotesController) {
+    this.votesController = votesController;
   }
 
   createRouter(): Router {
     const router = Router();
 
     //Creation de commentaire
-    router.post('/posts/:id/vote', this.voteController.postVote.bind(this.voteController));
-    router.post('/comments/:id/vote', this.voteController.CommentVote.bind(this.voteController));
+    router.post('/posts/:id/vote', authJwt.verifyToken, validateVote, this.votesController.postVote.bind(this.votesController));
+    router.post('/comments/:id/vote', authJwt.verifyToken, validateVote, this.votesController.commentVote.bind(this.votesController));
 
     return router;
   }

@@ -88,3 +88,11 @@ export const validateChangePassword = [
     .notEmpty()
     .withMessage('Password is required'),
 ]
+
+export const validateVote = [
+  body('vote')
+    .notEmpty()
+    .withMessage('Vote is required')
+    .isIn(['up', 'down'])
+    .withMessage('Vote must be either "up" or "down"'),
+];
