@@ -10,6 +10,83 @@ export class VotesController {
     this.votesService = votesService;
   }
 
+  async getVotePostById(request: Request, response: Response): Promise<void> {
+    try {
+      if (request.params.id) {
+
+        const voteData: Vote = {
+          entityType: "post",
+          entityId: request.params.id,
+        };
+
+        const voteResponse = await this.votesService.getVoteById(voteData);
+
+        response.status(voteResponse.status).send({
+          voteResponse,
+        });
+      }
+
+
+    } catch (error) {
+      response.status(500).json({
+        status: 500,
+        message: 'Internal server error',
+        data: error
+      })
+    }
+  }
+
+  async getVoteCommentById(request: Request, response: Response): Promise<void> {
+    try {
+      if (request.params.id) {
+
+        const voteData: Vote = {
+          entityType: "comment",
+          entityId: request.params.id,
+        };
+
+        const voteResponse = await this.votesService.getVoteById(voteData);
+
+        response.status(voteResponse.status).send({
+          voteResponse,
+        });
+      }
+
+
+    } catch (error) {
+      response.status(500).json({
+        status: 500,
+        message: 'Internal server error',
+        data: error
+      })
+    }
+  }
+
+  async getVoteByUser(request: Request, response: Response): Promise<void> {
+    try {
+      if (request.params.id) {
+
+        const voteData: Vote = {
+          createdBy: request.params.id,
+        };
+
+        const voteResponse = await this.votesService.getVoteByUser(voteData);
+
+        response.status(voteResponse.status).send({
+          voteResponse,
+        });
+      }
+
+
+    } catch (error) {
+      response.status(500).json({
+        status: 500,
+        message: 'Internal server error',
+        data: error
+      })
+    }
+  }
+
   async postVote(request: Request, response: Response): Promise<void> {
     const errors = validationResult(request);
 

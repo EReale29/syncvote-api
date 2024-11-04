@@ -2,6 +2,7 @@ import { FirestoreCollections } from "../types/firestore";
 import { PostsService, CommentsService } from '.';
 import { IResBody } from "../types/api";
 import {Vote} from "../types/entities/Vote"
+import {Post} from "../types/entities/Post";
 
 export class VotesService {
 
@@ -13,6 +14,63 @@ export class VotesService {
     this.postsService = postsService;
     this.commentsService = commentsService;
     this.db = db;
+  }
+
+  async getVoteById(voteData:Vote): Promise<IResBody>{
+    const votes: Vote[] = [];
+    const voteDoc = await this.db.votes.where('entityId', '==', voteData.entityId)
+      .where('entityType', '==', voteData.entityType)
+      .get();
+
+    if (!voteDoc.empty) {
+      for (const doc of voteDoc.docs) {
+        votes.push({
+          id: doc.id,
+          ...doc.data()
+        })
+      }
+    }
+
+    if (votes.length > 0) {
+      return {
+        status: 200,
+        message: 'votes retrieved successfully!',
+        data: votes
+      }
+    }
+
+    return {
+      status: 404,
+      message: 'vote not found',
+    }
+  }
+
+  async getVoteByUser(voteData:Vote): Promise<IResBody>{
+    const votes: Vote[] = [];
+    const voteDoc = await this.db.votes.where('createdBy', '==', voteData.createdBy).get();
+
+    if (!voteDoc.empty) {
+      for (const doc of voteDoc.docs) {
+        votes.push({
+          id: doc.id,
+          ...doc.data()
+        })
+      }
+    }
+
+    if (votes.length > 0) {
+      return {
+        status: 200,
+        message: 'votes retrieved successfully!',
+        data: votes
+      }
+    }
+
+    return {
+      status: 404,
+      message: 'vote not found',
+    }
+
   }
 
   async sendVote(voteData: Vote): Promise<IResBody> {
